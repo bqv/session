@@ -1,0 +1,5 @@
+#!/bin/execlineb -P
+foreground { env }
+fdmove -c 2 1
+trap -x { SIGTERM { emacsclient --eval "(kill-emacs)" } }
+exec -a emacs emacs --fg-daemon

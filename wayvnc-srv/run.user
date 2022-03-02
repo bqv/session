@@ -1,0 +1,53 @@
+#!/bin/execlineb -P
+forbacktickx -Ep mon {
+    pipeline { swaymsg -t get_outputs } jq -r "map({name: .name, offset: .rect.x}) | sort_by(.offset) | to_entries | map((.key+1|tostring)+\" \"+.value.name) | .[]"
+}
+multidefine $mon { idx name }
+importas -u idx idx
+importas -u name name
+
+background {
+    s6-tcpserver4 0.0.0.0 590${idx}
+    importas port TCPREMOTEPORT
+    background { wayvnc -o ${name} 127.0.0.1 $port }
+    importas -u pid1 !
+    background {
+        foreground {
+            redirfd -r 0 /dev/null
+            redirfd -w 1 /dev/null
+            loopwhilex -n foreground { sleep 1 }
+            s6-tcpclient 127.0.0.1 $port true
+        }
+        s6-tcpclient 127.0.0.1 $port
+        foreground { s6-ioconnect -67 }
+        kill $pid1
+    }
+    importas -u pid2 !
+    wait { $pid1 }
+    foreground { kill $pid2 }
+    wait { $pid2 }
+}
+
+background {
+    s6-tcpserver6 :: 590${idx}
+    importas port TCPREMOTEPORT
+    background { wayvnc -o ${name} 127.0.0.1 $port }
+    importas -u pid1 !
+    background {
+        foreground {
+            redirfd -r 0 /dev/null
+            redirfd -w 1 /dev/null
+            loopwhilex -n foreground { sleep 1 }
+            s6-tcpclient 127.0.0.1 $port true
+        }
+        s6-tcpclient 127.0.0.1 $port
+        foreground { s6-ioconnect -67 }
+        kill $pid1
+    }
+    importas -u pid2 !
+    wait { $pid1 }
+    foreground { kill $pid2 }
+    wait { $pid2 }
+}
+
+wait { }

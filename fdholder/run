@@ -1,0 +1,19 @@
+#!/bin/execlineb -P
+pipeline -dw --
+{
+  if --
+  {
+    forstdin -x0 -- i
+      exit 0
+  }
+  if -nt --
+  {
+    redirfd -r 0 ./data/autofilled
+    forstdin -E srvc
+    piperw 11 12
+      foreground { s6-fdholder-store -d 11 s "pipe:r-$srvc" }
+      s6-fdholder-store -d 12 s "pipe:w-$srvc"
+  }
+  s6-svc -t .
+}
+s6-fdholder-daemon -1 -i data/rules -- s

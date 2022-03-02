@@ -1,0 +1,4 @@
+#!/bin/execlineb -P
+foreground { env }
+fdmove -c 2 1
+exec -a gajim gajim

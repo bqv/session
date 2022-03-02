@@ -1,0 +1,5 @@
+#!/bin/execlineb -P
+#envfile directives.conf
+redirfd -r 0 ./fifo
+importas -sCuD "n3 s2000000 T" DIRECTIVES DIRECTIVES
+exec -c s6-log -d3 -b -- ${DIRECTIVES} .
