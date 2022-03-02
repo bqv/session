@@ -5,6 +5,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <pwd.h>
+#include <limits.h>
 
 #include <sys/prctl.h>
 #include <sys/stat.h>
@@ -66,18 +67,25 @@ int main(int argc, char* argv[]) {
         };
         execvp(args[0], args);
     }
-
     freopen(log_fifo, "w", stdout);
-    pid_t pid = fork();
 
+    if (fork() == 0) {
+        char *args[] = { "s6-supervise", "fdholder", NULL };
+        execvp(args[0], args);
+    }
+
+    if (fork() == 0) {
+        char *args[] = { "s6-supervise", "sway-log", NULL };
+        execvp(args[0], args);
+    }
+
+    pid_t pid = fork();
     if (pid == 0) {
         close(0);
         dup2(1, 2);
         // fdholder?
 
-        char *args[] = {
-            "s6-supervise", prgv[1] ? prgv[1] : "sway-srv", NULL
-        };
+        char *args[] = { "s6-supervise", prgv[1] ? prgv[1] : "sway-srv", NULL };
         execvp(args[0], args);
     }
 
