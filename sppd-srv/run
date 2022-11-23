@@ -1,0 +1,13 @@
+#!/bin/execlineb -P
+fdmove 1 0
+s6-fdholder-retrieve ../fdholder/s "pipe:w-sppd-log"
+fdswap 0 1
+
+fdmove -c 2 1
+getcwd -E PWD
+importas PATH PATH
+export PATH ${PWD}:${PATH}
+backtick -E USER { whoami }
+backtick -E HOME { homeof $USER }
+cd $HOME
+exec -a btspp btspp
