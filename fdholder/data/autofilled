@@ -1,6 +1,15 @@
+aria2-log
+mpd-log
+dbus-log
+broadway-log
+protonmail-log
+snooze-log
+gpg-log
+waydroid-log
 gajim-log
 wayvnc-log
 waybar-log
 emacs-log
 mako-log
 ckb-log
+sway-log

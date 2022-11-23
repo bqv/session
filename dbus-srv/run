@@ -1,0 +1,10 @@
+#!/bin/execlineb -P
+fdmove 1 0
+s6-fdholder-retrieve ../fdholder/s "pipe:w-dbus-log"
+fdswap 0 1
+
+fdmove -c 2 1
+
+importas -u runtime_dir XDG_RUNTIME_DIR
+
+dbus-daemon --session --address=unix:path=${runtime_dir}/bus

@@ -1,0 +1,8 @@
+#!/bin/execlineb -P
+fdmove 1 0
+s6-fdholder-retrieve ../fdholder/s "pipe:w-aria2-log"
+fdswap 0 1
+
+fdmove -c 2 1
+export XDG_RUNTIME_DIR /run/user/1000
+aria2c --enable-rpc --rpc-listen-all -d /srv/media

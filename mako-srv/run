@@ -4,4 +4,6 @@ s6-fdholder-retrieve ../fdholder/s "pipe:w-mako-log"
 fdswap 0 1
 
 fdmove -c 2 1
-exec -a mako mako
+#dbus-launch mako --default-timeout 300
+#exec -a swaync swaync
+exec -a dunst dunst

@@ -1,0 +1,13 @@
+#!/bin/execlineb -P
+fdmove 1 0
+s6-fdholder-retrieve ../fdholder/s "pipe:w-broadway-log"
+fdswap 0 1
+
+fdmove -c 2 1
+background {
+    exec -a gtk3-broadway broadwayd :3
+}
+background {
+    exec -a gtk4-broadway gtk4-broadwayd :4
+}
+wait { }

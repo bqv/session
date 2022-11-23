@@ -1,0 +1,3 @@
+#!/bin/execlineb -P
+s6-fdholder-retrieve ../fdholder/s "pipe:r-waydroid-log"
+./run.user

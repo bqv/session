@@ -1,0 +1,3 @@
+#!/bin/execlineb -P
+fdmove -c 2 1
+exec -a waydroid python3.9 /opt/waydroid/waydroid.py session start

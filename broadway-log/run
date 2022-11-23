@@ -1,0 +1,6 @@
+#!/bin/execlineb -P
+s6-fdholder-retrieve ../fdholder/s "pipe:r-broadway-log"
+
+#envfile directives.conf
+importas -sCuD "n3 s2000000 T" DIRECTIVES DIRECTIVES
+exec -c s6-log -d3 -b -- ${DIRECTIVES} .

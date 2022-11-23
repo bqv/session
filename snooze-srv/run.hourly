@@ -1,0 +1,4 @@
+#!/bin/sh
+mkdir -p timefile
+exec snooze -H \* -s 1h -t timefile/hourly -- sh -c \
+	"test -d hourly && run-parts --lsbsysinit hourly; touch timefile/hourly"

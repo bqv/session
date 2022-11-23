@@ -1,9 +1,19 @@
 #!/bin/execlineb -P
-if { s6-svc -u sway-log }
+#if { s6-svc -u sway-log }
 
 fdmove 1 0
 s6-fdholder-retrieve ../fdholder/s "pipe:w-sway-log"
 fdswap 0 1
 
+cd ../.. # home
+
 fdmove -c 2 1
+
+export _JAVA_AWT_WM_NONREPARENTING 1
+export MOZ_ENABLE_WAYLAND 1
+
+# ??
+#importas -u runtime_dir XDG_RUNTIME_DIR
+#export DBUS_SESSION_BUS_ADDRESS=unix:path=${runtime_dir}/bus
+
 exec -a sway sway

@@ -1,0 +1,4 @@
+#!/bin/sh
+mkdir -p timefile
+exec snooze -d 1 -s 28d -t timefile/monthly -- sh -c \
+	"test -d monthly && run-parts --lsbsysinit monthly; touch timefile/monthly"

@@ -1,0 +1,4 @@
+#!/bin/sh
+mkdir -p timefile
+exec snooze -w 0 -s 7d -t timefile/weekly -- sh -c \
+	"test -d weekly && run-parts --lsbsysinit weekly; touch timefile/weekly"

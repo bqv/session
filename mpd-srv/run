@@ -1,0 +1,8 @@
+#!/bin/execlineb -P
+fdmove 1 0
+s6-fdholder-retrieve ../fdholder/s "pipe:w-mpd-log"
+fdswap 0 1
+
+fdmove -c 2 1
+export XDG_RUNTIME_DIR /run/user/1000
+mpd --no-daemon ../../.config/mpd.conf

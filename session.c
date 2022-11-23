@@ -74,6 +74,22 @@ int main(int argc, char* argv[]) {
         execvp(args[0], args);
     }
 
+    FILE *pipe = popen("execlineb -s0 /dev/stdin", "w");
+    if (!pipe) {
+        perror("Error opening execlineb");
+        exit(E_PIPE);
+    }
+
+    fputs("define srvc sway-log", pipe);
+    fputs(" cd fdholder", pipe);
+    fputs(" piperw 11 12", pipe);
+    fputs("   foreground { s6-fdholder-store -d 11 s pipe:r-${srvc} }", pipe);
+    fputs("   s6-fdholder-store -d 12 s pipe:w-${srvc}", pipe);
+    if (pclose(pipe) == -1) {
+        perror("Error closing execlineb");
+        exit(E_PIPE);
+    }
+
     if (fork() == 0) {
         char *args[] = { "s6-supervise", "sway-log", NULL };
         execvp(args[0], args);
@@ -89,16 +105,17 @@ int main(int argc, char* argv[]) {
         execvp(args[0], args);
     }
 
-    FILE *pipe = popen("execlineb -s0 /dev/stdin", "w");
+    pipe = popen("execlineb -s0 /dev/stdin", "w");
     if (!pipe) {
         perror("Error opening execlineb");
         kill(pid, SIGTERM);
         exit(E_PIPE);
     }
 
-    fprintf(pipe, "define pid %d", pid);
+    fprintf(pipe, "define orig_pid %d", pid);
     fputs(" backtick -E uid { id -u }", pipe);
     fputs(" loopwhilex -n foreground { sleep 1 }", pipe);
+    fputs(" elglob pid '/run/user/${uid}/sway-ipc.${uid}.*.sock'", pipe);
     fputs(" swaymsg --socket /run/user/${uid}/sway-ipc.${uid}.${pid}.sock -- exec", pipe);
     fprintf(pipe, " redirfd -w 1 %s /usr/bin/env SESSION_PID=${pid}", env_fifo);
     if (pclose(pipe) == -1) {

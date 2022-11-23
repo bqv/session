@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -euo pipefail
+
+while sleep 15; do
+	avahi-browse -rpt _adb-tls-connect._tcp |\
+		cut -d';' -f 8-9 |\
+		tr ';' ':' |\
+		xargs -I% adb connect %
+done

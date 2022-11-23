@@ -1,0 +1,22 @@
+#!/bin/execlineb -P
+fdmove 1 0
+s6-fdholder-retrieve ../fdholder/s "pipe:w-gpg-log"
+fdswap 0 1
+
+fdmove -c 2 1
+getpid -E pid
+
+s6-ipcserver-socketbinder -a 0600 /run/user/1000/gnupg/S.gpg-agent
+fdmove 3 0
+s6-ipcserver-socketbinder -a 0600 /run/user/1000/gnupg/S.gpg-agent.extra
+fdmove 4 0
+s6-ipcserver-socketbinder -a 0600 /run/user/1000/gnupg/S.gpg-agent.browser
+fdmove 5 0
+s6-ipcserver-socketbinder -a 0600 /run/user/1000/gnupg/S.gpg-agent.ssh
+fdmove 6 0
+
+export LISTEN_PID "${pid}"
+export LISTEN_FDS 4
+export LISTEN_FDNAMES std:extra:browser:ssh
+
+gpg-agent --supervised --enable-ssh-support

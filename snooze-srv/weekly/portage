@@ -1,0 +1,4 @@
+#!/bin/bash
+
+swaymsg --socket /run/user/$(id -u)/sway-ipc.$(id -u).* --\
+  exec alacritty -t emerge -e 'sudo emaint sync -a && sudo emerge -uUDN @world --keep-going; read -r'

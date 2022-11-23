@@ -16,4 +16,4 @@ pipeline -dw --
   }
   s6-svc -t .
 }
-s6-fdholder-daemon -1 -i data/rules -- s
+s6-fdholder-daemon -1 -i data/rules -v 2 -- s
